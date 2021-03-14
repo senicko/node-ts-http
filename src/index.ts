@@ -1,0 +1,67 @@
+import { STATUS_CODES } from 'http';
+import { App, Request, Response, parseBody } from '../lib/server';
+
+const port = process.env.PORT ?? 3000;
+const app: App = new App(port);
+let users: any[] = [];
+
+app.get('/users', (_req: Request, res: Response) => {
+	// Set Content-Type and status code
+	res.setHeader('Content-Type', 'application/json');
+	res.writeHead(200);
+	// Send array of users
+	res.end(JSON.stringify({ users }));
+});
+
+app.get('/users/:id', (req: Request, res: Response) => {
+	// Find user
+	const user = users.find(user => user.id === parseInt(req.params.id));
+
+	// If user does not exists return 404
+	if (!user) {
+		res.writeHead(404);
+		res.end('User not found');
+	} else {
+		// Return user
+		res.setHeader('Content-Type', 'application/json');
+		res.writeHead(200);
+		res.end(JSON.stringify(user));
+	}
+});
+
+app.post('/users', async (req: Request, res: Response) => {
+	try {
+		// Parse req body to json
+		const payload = await parseBody(req);
+		const body = JSON.parse(payload);
+
+		// Add new user to "database"
+		users.push({
+			id: users.length,
+			...body,
+		});
+
+		// Send 201 response
+		res.writeHead(201);
+		res.end(STATUS_CODES[201]);
+	} catch (err) {
+		// Send 500 response
+		res.writeHead(500);
+		res.end(STATUS_CODES[500]);
+	}
+});
+
+app.delete('/users/:id', (req: Request, res: Response) => {
+	// Get id from params
+	const { id } = req.params;
+
+	// Remove user from the array
+	users = users.filter(user => user.id !== parseInt(id));
+
+	// Send 200 response
+	res.writeHead(200);
+	res.end(STATUS_CODES[200]);
+});
+
+// Start app
+app.listen(() => console.log(`Server started on port ${port}`));
