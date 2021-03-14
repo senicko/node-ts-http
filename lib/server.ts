@@ -1,10 +1,4 @@
-import {
-    createServer,
-    Server,
-    IncomingMessage,
-    ServerResponse,
-    STATUS_CODES,
-} from 'http';
+import { createServer, Server, IncomingMessage, ServerResponse } from 'http';
 
 import { compareUrl, getUrlParams } from './util/url';
 
@@ -12,12 +6,14 @@ import { compareUrl, getUrlParams } from './util/url';
 export interface Request<T = { [key: string]: string }>
     extends IncomingMessage {
     url: string;
+    body: string;
     params: T;
 }
 
-// Response
+// Response type
 export type Response = ServerResponse;
 
+// Request handler type
 export type RequestHandler = (req: Request, res: ServerResponse) => void;
 
 // RequestMeta structure
@@ -49,7 +45,7 @@ export class App {
 
     constructor(private port: string | number) {}
 
-    private requestHandler(req: Request, res: ServerResponse) {
+    private async requestHandler(req: Request, res: ServerResponse) {
         const { method, url } = req;
 
         // Find handler in reqister handlers array
@@ -62,10 +58,14 @@ export class App {
         if (!handler) {
             // If no return 404 message
             res.writeHead(404);
-            res.end(STATUS_CODES[404]);
+            res.end(`Cannot ${method} ${url}`);
         } else {
             // Set defined params
             req.params = getUrlParams(handler.path, url);
+
+            // Set body
+            req.body = await parseBody(req);
+
             // Call main handler
             handler.handler(req, res);
         }

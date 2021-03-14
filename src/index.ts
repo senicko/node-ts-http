@@ -1,5 +1,5 @@
 import { STATUS_CODES } from 'http';
-import { App, Request, Response, parseBody } from '../lib/server';
+import { App, Request, Response } from '../lib/server';
 
 const port = process.env.PORT ?? 3000;
 const app: App = new App(port);
@@ -32,18 +32,21 @@ app.get('/users/:id', (req: Request, res: Response) => {
 app.post('/users', async (req: Request, res: Response) => {
     try {
         // Parse req body to json
-        const payload = await parseBody(req);
-        const body = JSON.parse(payload);
+        const body = JSON.parse(req.body);
 
-        // Add new user to "database"
-        users.push({
+        // Create new user
+        const user = {
             id: users.length,
             ...body,
-        });
+        };
+
+        // Add new user to "database"
+        users.push(user);
 
         // Send 201 response
+        res.setHeader('Content-Type', 'application/json');
         res.writeHead(201);
-        res.end(STATUS_CODES[201]);
+        res.end(JSON.stringify(user));
     } catch (err) {
         // Send 500 response
         res.writeHead(500);
