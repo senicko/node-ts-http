@@ -4,7 +4,7 @@ export const compareUrl = (schema: string, url: string): boolean => {
 	const dividedSchema = schema.split('/');
 	const dividedUrl = url.split('?')[0].split('/');
 
-	// If length of urls are different return false
+	// If length of urls is different return false
 	if (dividedSchema.length !== dividedUrl.length) return false;
 
 	// Check each url node
