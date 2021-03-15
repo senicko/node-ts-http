@@ -22,7 +22,7 @@ const app = new App(3000);
 
 ### Registering new handlers
 
-Available methods (You can add more in App class, it is extremely easy)
+Available methods (You can add more inside App class, it is extremely easy)
 
 -   GET
 -   POST
@@ -37,10 +37,10 @@ app.get('/users', (_req: Request, res: Response) => {
 
 ### Accessing params and body
 
-params are located in handler `Response`. You can acces it like this
+params are located in handler `Request` parameter. You can acces it like this
 
 ```ts
-app.get('/users/:id', (_req: Request, res: Response) => {
+app.get('/users/:id', (req: Request, res: Response) => {
     // Access id
     const id = req.params.id;
 
@@ -53,8 +53,8 @@ app.get('/users/:id', (_req: Request, res: Response) => {
 body works similarly
 
 ```ts
-app.post('/users', (_req: Request, res: Response) => {
-    // Access id
+app.post('/users', (req: Request, res: Response) => {
+    // Access body
     const user = JSON.parse(req.body);
 
     //... DO SOMETHING WITH USER :O
