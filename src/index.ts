@@ -57,8 +57,7 @@ app.delete('/users/:id', (req: Request, res: Response) => {
     users = users.filter(user => user.id !== parseInt(id));
 
     // Send 200 response
-    res.writeHead(200);
-    res.end(STATUS_CODES[200]);
+    res.writeHead(200).end(STATUS_CODES[200]);
 });
 
 // Start app
