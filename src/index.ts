@@ -8,9 +8,7 @@ let users: any[] = [];
 app.get('/users', (_req: Request, res: Response) => {
     // Set Content-Type and status code
     res.setHeader('Content-Type', 'application/json');
-    res.writeHead(200);
-    // Send array of users
-    res.end(JSON.stringify({ users }));
+    res.writeHead(200).end(JSON.stringify({ users }));
 });
 
 app.get('/users/:id', (req: Request, res: Response) => {
@@ -24,8 +22,7 @@ app.get('/users/:id', (req: Request, res: Response) => {
     } else {
         // Return user
         res.setHeader('Content-Type', 'application/json');
-        res.writeHead(200);
-        res.end(JSON.stringify(user));
+        res.writeHead(200).end(JSON.stringify(user));
     }
 });
 
@@ -45,12 +42,10 @@ app.post('/users', async (req: Request, res: Response) => {
 
         // Send 201 response
         res.setHeader('Content-Type', 'application/json');
-        res.writeHead(201);
-        res.end(JSON.stringify(user));
+        res.writeHead(201).end(JSON.stringify(user));
     } catch (err) {
         // Send 500 response
-        res.writeHead(500);
-        res.end(STATUS_CODES[500]);
+        res.writeHead(500).end(STATUS_CODES[500]);
     }
 });
 
